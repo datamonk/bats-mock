@@ -104,3 +104,20 @@ unstub() {
     # Return the exit status of the mock command or zero if it wasn't executed
     return "$STATUS"
 }
+
+stub_reset() {
+  # Simply remove the whole folder
+  # That deletes all stubs, plans etc.
+  rm -rf "${BATS_MOCK_TMPDIR}" || true
+}
+
+unstub_all() {
+  local result=0
+  if [ -d "${BATS_MOCK_BINDIR}" ]; then
+    for program in "${BATS_MOCK_BINDIR}"/*; do
+      program=$(basename "${program}")
+      unstub "${program}" || result=1
+    done
+  fi
+  return $result
+}
